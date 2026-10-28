@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101523" />
+  <meta name="description" content="Churn Predictor — customer retention insights and churn analytics." />
+  <title>Churn Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="Churn Predictor home"><span class="brand-symbol">✳</span><span>churn predictor</span><span class="brand-period">.</span></a>
+      <button class="workspace-switch" type="button"><span class="workspace-avatar">C</span><span class="workspace-label"><strong>Churn Predictor</strong><small>Customer insights</small></span><span class="workspace-chevron">⌄</span></button>
+      <p class="nav-caption">DASHBOARD</p>
+      <label class="sidebar-filter" for="contract-filter"><span>CONTRACT FILTER</span>
+        <select id="contract-filter">
+          <option value="All">All contracts</option>
+          <option value="Month-to-month">Month-to-month</option>
+          <option value="One year">One year</option>
+          <option value="Two year">Two year</option>
+        </select>
+      </label>
+      <nav class="navigation" aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="nav-item" href="#insights"><span class="nav-icon">⌁</span>Churn insights</a>
+        <a class="nav-item" href="#prediction"><span class="nav-icon">✳</span>Churn prediction</a>
+        <a class="nav-item" href="#customers"><span class="nav-icon">♙</span>Customers</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-mark">?</span><span><strong>Need a hand?</strong><small>Visit the help center</small></span><span class="help-arrow">↗</span></div>
+        <div class="user-profile"><span class="user-avatar">AM</span><span><strong>Alex Morgan</strong><small>Administrator</small></span><span class="profile-more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div class="breadcrumbs">Workspace <span>/</span> <strong>Overview</strong></div>
+        <div class="topbar-right"><span class="status-label"><i></i><span id="status">Loading Telco dataset…</span></span><button class="notification-button" type="button" aria-label="Notifications">♧<i></i></button><span class="top-avatar">AM</span></div>
+      </header>
+      <div class="page-content">
+        <section class="page-heading">
+          <div><p class="eyebrow">TELCO CUSTOMER CHURN DATASET</p><h1>Customer churn dashboard</h1><p class="page-description">Understand the patterns behind customer loyalty and churn.</p></div>
+          <div class="heading-tools"><span class="date-chip"><span>▦</span>Preloaded dataset</span><button class="button button-secondary" id="refresh-button" type="button"><span class="refresh-icon">↻</span>Reload dataset</button></div>
+        </section>
+        <div id="dataset-warning" class="dataset-warning" role="alert" hidden></div>
+
+        <section class="metrics-grid" aria-label="Key metrics">
+          <article class="metric-card"><div class="metric-heading"><span>Total customers</span><span class="metric-icon purple">♙</span></div><p id="kpi-total-customers" class="metric-value">—</p><p class="metric-note">Customers in this view</p></article>
+          <article class="metric-card risk-card"><div class="metric-heading"><span>Churned customers</span><span class="metric-icon rose">↗</span></div><p id="kpi-churned-customers" class="metric-value">—</p><p class="metric-note">Customers marked as churned</p></article>
+          <article class="metric-card"><div class="metric-heading"><span>Churn rate</span><span class="metric-icon amber">%</span></div><p id="kpi-churn-rate" class="metric-value">—</p><p class="metric-note">Share of filtered customers</p></article>
+          <article class="metric-card"><div class="metric-heading"><span>Average monthly charge</span><span class="metric-icon green">$</span></div><p id="kpi-average-charge" class="metric-value">—</p><p class="metric-note">Average customer charge</p></article>
+        </section>
+
+        <section class="dashboard-section" id="insights">
+          <div class="section-heading"><div><h2>Churn insights</h2><p>Explore churn behavior in the selected customer group.</p><p class="insight-count" id="insight-count">Calculating from dataset…</p></div><span class="dataset-badge">PRELOADED DATA</span></div>
+          <div class="chart-grid">
+            <article class="chart-card retention-card"><div class="chart-heading"><div><h3>Customer mix</h3><p>Retained and churned customers</p></div></div><div class="retention-total" id="retention-summary">—</div><div class="chart-area doughnut-area"><canvas id="chart-churn-distribution" role="img" aria-label="Customer churn distribution"></canvas></div><div class="chart-legend"><span><i class="legend-retained"></i>Retained</span><span><i class="legend-churned"></i>Churned</span></div></article>
+            <article class="chart-card"><div class="chart-heading"><div><h3>Contract patterns</h3><p>Churn rate by contract</p></div></div><div class="chart-area"><canvas id="chart-churn-contract" role="img" aria-label="Churn rate by contract type"></canvas></div></article>
+            <article class="chart-card"><div class="chart-heading"><div><h3>Tenure patterns</h3><p>Churn rate across customer lifecycle</p></div></div><div class="chart-area"><canvas id="chart-churn-tenure" role="img" aria-label="Churn rate by tenure group"></canvas></div></article>
+          </div>
+        </section>
+
+        <section class="dashboard-section prediction-section" id="prediction">
+          <div class="section-heading"><div><h2>Predict customer churn</h2><p>Adjust a customer profile to estimate churn risk and explore retention ideas.</p></div><span class="model-badge"><span></span>LOGISTIC REGRESSION</span></div>
+          <form id="prediction-form" class="prediction-card">
+            <div class="prediction-form-heading"><span class="prediction-spark">✳</span><div><h3>Customer profile</h3><p>Enter the six customer details used by the model.</p></div></div>
+            <div class="prediction-fields">
+              <label class="form-field">Contract
+                <select id="predict-contract" required><option>Month-to-month</option><option>One year</option><option>Two year</option></select>
+              </label>
+              <label class="form-field">Tenure in months <span id="tenure-value">0 months</span>
+                <input id="predict-tenure" type="range" min="0" max="72" value="0" />
+                <span class="range-scale"><span>0</span><span>72</span></span>
+              </label>
+              <label class="form-field">Monthly charges
+                <div class="input-prefix"><span>$</span><input id="predict-monthly-charges" type="number" min="0" step="0.01" value="0" required /></div>
+              </label>
+              <label class="form-field">Internet service
+                <select id="predict-internet" required></select>
+              </label>
+              <label class="form-field">Payment method
+                <select id="predict-payment" required></select>
+              </label>
+              <label class="form-field">Tech support
+                <select id="predict-tech-support" required><option>Yes</option><option>No</option><option>No internet service</option></select>
+              </label>
+            </div>
+            <div class="prediction-actions"><button class="button button-primary" id="predict-button" type="submit"><span>✦</span> Predict churn</button><span class="prediction-hint">Prediction uses the full dataset model.</span></div>
+            <div id="prediction-result" class="prediction-result" role="status" aria-live="polite" hidden></div>
+          </form>
+
+          <details class="model-performance">
+            <summary><span><strong>Model performance</strong><small>Holdout evaluation on unseen customers</small></span><span class="details-chevron">⌄</span></summary>
+            <div class="performance-content">
+              <div class="performance-metrics">
+                <article><span>Test accuracy</span><strong id="model-accuracy">—</strong></article>
+                <article><span>Test precision</span><strong id="model-precision">—</strong></article>
+                <article><span>Test recall</span><strong id="model-recall">—</strong></article>
+              </div>
+              <p>Recall matters more than accuracy because far fewer customers churn than stay.</p>
+            </div>
+          </details>
+        </section>
+
+        <section class="dashboard-section customers-section" id="customers">
+          <div class="section-heading customer-heading"><div><h2>Customer directory</h2><p>Search and filter the first 100 records from the attached dataset.</p></div><span class="customer-count" id="customer-count">100 customers</span></div>
+          <div class="table-card">
+            <div class="table-toolbar">
+              <label class="search-box"><span aria-hidden="true">⌕</span><input id="customer-search" type="search" placeholder="Search customers…" aria-label="Search customers" autocomplete="off" /></label>
+              <label class="filter-box"><span aria-hidden="true">☷</span><select id="churn-filter" aria-label="Filter customers"><option value="all">All customers</option><option value="active">Retained</option><option value="churned">Churned</option></select></label>
+            </div>
+            <div class="table-scroll"><table><thead><tr><th>Customer</th><th>Contract</th><th>Tenure</th><th>Payment method</th><th>Monthly spend</th><th>Status</th></tr></thead><tbody id="customer-table-body"><tr><td class="table-message" colspan="6">Loading customer records…</td></tr></tbody></table></div>
+            <div class="table-footer"><span id="table-result-count">Loading records…</span><span>Showing the first 100 customers</span></div>
+          </div>
+        </section>
+        <footer class="page-footer"><span>© <span id="footer-year"></span> Northstar Analytics</span><span>Source: Telco Customer Churn dataset</span></footer>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
